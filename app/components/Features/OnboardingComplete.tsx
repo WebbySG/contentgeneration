@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Sparkles, ArrowRight } from "lucide-react";
+import { CheckCircle2, Sparkles, ArrowRight, RefreshCw } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import AICharacter from "./AICharacter";
@@ -8,9 +8,10 @@ interface OnboardingCompleteProps {
   answers: Record<string, string>;
   submitStatus?: { success: boolean; message: string } | null;
   isSubmitting?: boolean;
+  onRetry?: () => void;
 }
 
-const OnboardingComplete = ({ answers, submitStatus, isSubmitting = false }: OnboardingCompleteProps) => {
+const OnboardingComplete = ({ answers, submitStatus, isSubmitting = false, onRetry }: OnboardingCompleteProps) => {
   const router = useRouter();
 
   return (
@@ -79,7 +80,17 @@ const OnboardingComplete = ({ answers, submitStatus, isSubmitting = false }: Onb
                 : "bg-red-500/10 text-red-600 border border-red-500/20"
             }`}
           >
-            <p className="text-sm font-medium">{submitStatus.message}</p>
+            <p className="text-sm font-medium mb-3">{submitStatus.message}</p>
+            {!submitStatus.success && onRetry && (
+              <Button
+                onClick={onRetry}
+                variant="outline"
+                className="w-full border-red-500/30 text-red-600 hover:bg-red-500/10 hover:text-red-600"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Retry
+              </Button>
+            )}
           </motion.div>
         )}
       </motion.div>

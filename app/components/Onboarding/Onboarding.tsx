@@ -104,48 +104,50 @@ const Onboarding = () => {
     }, 2500);
   }, [currentQuestion, currentStep]);
 
+  // Submit data to API
+  const submitData = useCallback(async () => {
+    setPhase("submitting");
+    setSubmitStatus(null);
+    try {
+      const response = await fetch("/api/Onboarding", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(answers),
+      });
+
+      const data = await response.json();
+
+      if (data.code === 200) {
+        setSubmitStatus({
+          success: true,
+          message: data.text || "Your data is successfully submitted",
+        });
+      } else {
+        setSubmitStatus({
+          success: false,
+          message: data.text || "Failed to submit data",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting onboarding data:", error);
+      setSubmitStatus({
+        success: false,
+        message: "An error occurred while submitting your data",
+      });
+    } finally {
+      setPhase("complete");
+    }
+  }, [answers]);
+
   // Send data to API when form is complete (only once)
   useEffect(() => {
     if (phase === "complete" && Object.keys(answers).length === questions.length && !hasSubmittedRef.current) {
       hasSubmittedRef.current = true;
-      const submitData = async () => {
-        setPhase("submitting");
-        try {
-          const response = await fetch("/api/Onboarding", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(answers),
-          });
-
-          const data = await response.json();
-
-          if (data.code === 200) {
-            setSubmitStatus({
-              success: true,
-              message: data.text || "Your data is successfully submitted",
-            });
-          } else {
-            setSubmitStatus({
-              success: false,
-              message: data.text || "Failed to submit data",
-            });
-          }
-        } catch (error) {
-          console.error("Error submitting onboarding data:", error);
-          setSubmitStatus({
-            success: false,
-            message: "An error occurred while submitting your data",
-          });
-        } finally {
-          setPhase("complete");
-        }
-      };
-
       submitData();
     }
-  }, [phase, answers]);
+  }, [phase, answers, submitData]);
 
   if (phase === "complete" || phase === "submitting" || isComplete) {
     return (
@@ -154,6 +156,7 @@ const Onboarding = () => {
           answers={answers} 
           submitStatus={submitStatus}
           isSubmitting={phase === "submitting"}
+          onRetry={submitData}
         />
       </div>
     );
