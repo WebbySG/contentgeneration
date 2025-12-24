@@ -58,7 +58,7 @@ const Content = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("table");
   const [editingKeyword, setEditingKeyword] = useState<string | null>(null);
 
-  // Mock data - AI Suggested Keywords
+  // Mock data - AI Suggested Keywords ye bd ma change honge!
   const availableKeywords: Keyword[] = [
     { id: "1", keyword: "digital marketing strategy", volume: 12000, difficulty: 65, selected: true, isAISuggested: true },
     { id: "2", keyword: "content marketing tips", volume: 8500, difficulty: 58, selected: true, isAISuggested: true },
