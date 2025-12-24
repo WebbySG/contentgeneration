@@ -1,7 +1,10 @@
+import AppLayout from "../../components/Dashboard/layout/AppLayout";
+import Content from "../../components/Content/Content";
+
 export default function ContentPage() {
     return (
-        <div>
-            <h1>Content</h1>
-        </div>
+        <AppLayout>
+            <Content />
+        </AppLayout>
     );
 }
